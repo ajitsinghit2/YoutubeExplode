@@ -3,7 +3,7 @@
 namespace YoutubeExplode.Exceptions
 {
     /// <summary>
-    /// Thrown when the video is a paid Youtube Red video since then we have no access to more video details
+    /// Thrown when the video requires purchase
     /// </summary>
     public class VideoRequiresPurchaseException : Exception
     {

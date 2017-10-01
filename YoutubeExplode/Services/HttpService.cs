@@ -38,15 +38,9 @@ namespace YoutubeExplode.Services
         }
 
         /// <inheritdoc />
-        ~HttpService()
+        public virtual Task<HttpResponseMessage> PerformRequestAsync(HttpRequestMessage request)
         {
-            Dispose(false);
-        }
-
-        /// <inheritdoc />
-        public virtual async Task<HttpResponseMessage> PerformRequestAsync(HttpRequestMessage request)
-        {
-            return await Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            return Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         }
 
         /// <summary>

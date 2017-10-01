@@ -17,7 +17,7 @@ namespace DemoWpf.ViewModels
 
         private bool _isBusy;
         private string _videoId;
-        private VideoInfo _videoInfo;
+        private Video _video;
         private double _progress;
         private bool _isProgressIndeterminate;
 
@@ -42,17 +42,17 @@ namespace DemoWpf.ViewModels
             }
         }
 
-        public VideoInfo VideoInfo
+        public Video Video
         {
-            get => _videoInfo;
+            get => _video;
             private set
             {
-                Set(ref _videoInfo, value);
+                Set(ref _video, value);
                 RaisePropertyChanged(() => IsVideoInfoAvailable);
             }
         }
 
-        public bool IsVideoInfoAvailable => VideoInfo != null;
+        public bool IsVideoInfoAvailable => Video != null;
 
         public double Progress
         {
@@ -92,14 +92,14 @@ namespace DemoWpf.ViewModels
             IsProgressIndeterminate = true;
 
             // Reset data
-            VideoInfo = null;
+            Video = null;
 
             // Parse URL if necessary
             if (!YoutubeClient.TryParseVideoId(VideoId, out string id))
                 id = VideoId;
 
             // Perform the request
-            VideoInfo = await _client.GetVideoInfoAsync(id);
+            Video = await _client.GetVideoAsync(id);
 
             IsBusy = false;
             IsProgressIndeterminate = false;
@@ -109,7 +109,7 @@ namespace DemoWpf.ViewModels
         {
             // Create dialog
             var fileExtension = mediaStreamInfo.Container.GetFileExtension();
-            var defaultFileName = $"{VideoInfo.Title}.{fileExtension}";
+            var defaultFileName = $"{Video.Title}.{fileExtension}";
             defaultFileName = defaultFileName.Except(Path.GetInvalidFileNameChars());
             var fileFilter =
                 $"{mediaStreamInfo.Container} Files|*.{fileExtension}|" +
@@ -140,7 +140,7 @@ namespace DemoWpf.ViewModels
         private async void DownloadClosedCaptionTrackAsync(ClosedCaptionTrackInfo closedCaptionTrackInfo)
         {
             // Create dialog
-            var defaultFileName = $"{VideoInfo.Title}.{closedCaptionTrackInfo.Language.Name}.srt";
+            var defaultFileName = $"{Video.Title}.{closedCaptionTrackInfo.Language.Name}.srt";
             defaultFileName = defaultFileName.Except(Path.GetInvalidFileNameChars());
             var fileFilter =
                 "SRT Files|*.srt|" +

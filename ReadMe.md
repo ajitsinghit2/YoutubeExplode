@@ -1,11 +1,12 @@
 # YoutubeExplode
 
-Library that lets you query various Youtube metadata, unwrap playlists, download videos, extract closed captions and much more.
-Does not require an API key and as such does not impose any usage quotas.
+YoutubeExplode is a library that provides an interface to query metadata of Youtube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks.
+Behind a layer of abstraction, the library parses raw page content and uses reverse-engineered AJAX requests to retrieve information.
+As it doesn't use the official API, there's also no need for an API key and there are no usage quotas.
 
 ## Screenshots
 
-![](http://www.tyrrrz.me/projects/images/ytexplode_1.png)
+![](http://www.tyrrrz.me/Projects/YoutubeExplode/Images/1.png)
 
 ## Download
 

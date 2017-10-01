@@ -3,7 +3,7 @@
 namespace YoutubeExplode.Exceptions
 {
     /// <summary>
-    /// Thrown when Youtube's frontend returns an error when getting video info
+    /// Thrown when video is not available
     /// </summary>
     public class VideoNotAvailableException : Exception
     {

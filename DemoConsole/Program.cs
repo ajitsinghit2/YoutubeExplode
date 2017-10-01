@@ -51,7 +51,7 @@ namespace DemoConsole
 
             // Get the video info
             Console.WriteLine("Loading...");
-            var video = await client.GetVideoInfoAsync(id);
+            var video = await client.GetVideoAsync(id);
             Console.WriteLine('-'.Repeat(100));
 
             // Print metadata
@@ -59,7 +59,7 @@ namespace DemoConsole
 
             // Get the most preferable stream
             Console.WriteLine("Looking for the best mixed stream...");
-            var streamInfo = video.MixedStreams
+            var streamInfo = video.MuxedStreams
                 .OrderBy(s => s.VideoQuality)
                 .Last();
             var normalizedFileSize = NormalizeFileSize(streamInfo.ContentLength);

@@ -9,7 +9,7 @@ namespace DemoWpf.ViewModels
     {
         bool IsBusy { get; }
         string VideoId { get; set; }
-        VideoInfo VideoInfo { get; }
+        Video Video { get; }
         bool IsVideoInfoAvailable { get; }
         double Progress { get; }
         bool IsProgressIndeterminate { get; }

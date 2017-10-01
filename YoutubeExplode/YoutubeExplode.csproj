@@ -19,4 +19,8 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="YoutubeClient.Static.cs" />
+  </ItemGroup>
+
 </Project>

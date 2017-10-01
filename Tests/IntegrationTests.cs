@@ -49,9 +49,8 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            var videoInfo = await client.GetVideoInfoAsync(id);
+            var videoInfo = await client.GetVideoAsync(id);
 
-            Assert.That.IsSet(videoInfo);
             Assert.AreEqual(id, videoInfo.Id);
         }
 
@@ -63,7 +62,7 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            await Assert.ThrowsExceptionAsync<VideoNotAvailableException>(() => client.GetVideoInfoAsync(id));
+            await Assert.ThrowsExceptionAsync<VideoNotAvailableException>(() => client.GetVideoAsync(id));
         }
 
         [TestMethod]
@@ -74,7 +73,7 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            await Assert.ThrowsExceptionAsync<VideoRequiresPurchaseException>(() => client.GetVideoInfoAsync(id));
+            await Assert.ThrowsExceptionAsync<VideoRequiresPurchaseException>(() => client.GetVideoAsync(id));
         }
 
         [TestMethod]
@@ -86,9 +85,8 @@ namespace Tests
             var minVideoCount = (int) TestContext.DataRow["MinVideoCount"];
 
             var client = new YoutubeClient();
-            var playlistInfo = await client.GetPlaylistInfoAsync(id);
+            var playlistInfo = await client.GetPlaylistAsync(id);
 
-            Assert.That.IsSet(playlistInfo);
             Assert.AreEqual(id, playlistInfo.Id);
             Assert.IsTrue(minVideoCount <= playlistInfo.Videos.Count);
         }
@@ -102,9 +100,8 @@ namespace Tests
             var pageLimit = 1;
 
             var client = new YoutubeClient();
-            var playlistInfo = await client.GetPlaylistInfoAsync(id, pageLimit);
+            var playlistInfo = await client.GetPlaylistAsync(id, pageLimit);
 
-            Assert.That.IsSet(playlistInfo);
             Assert.AreEqual(id, playlistInfo.Id);
             Assert.IsTrue(200 * pageLimit >= playlistInfo.Videos.Count);
         }
@@ -120,8 +117,6 @@ namespace Tests
             var videos = await client.GetChannelUploadsAsync(id);
 
             Assert.IsNotNull(videos);
-            foreach (var video in videos)
-                Assert.That.IsSet(video);
         }
 
         [TestMethod]
@@ -132,9 +127,9 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            var channelInfo = await client.GetChannelInfoAsync(id);
+            var channelInfo = await client.GetChannelAsync(id);
 
-            Assert.That.IsSet(channelInfo);
+            Assert.IsNotNull(channelInfo);
         }
 
         [TestMethod]
@@ -145,10 +140,10 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            var videoInfo = await client.GetVideoInfoAsync(id);
+            var videoInfo = await client.GetVideoAsync(id);
 
             var streams = new List<MediaStreamInfo>();
-            streams.AddRange(videoInfo.MixedStreams);
+            streams.AddRange(videoInfo.MuxedStreams);
             streams.AddRange(videoInfo.AudioStreams);
             streams.AddRange(videoInfo.VideoStreams);
 
@@ -156,7 +151,7 @@ namespace Tests
             {
                 using (var stream = await client.GetMediaStreamAsync(streamInfo))
                 {
-                    Assert.That.IsSet(stream);
+                    Assert.IsNotNull(stream);
 
                     var buffer = new byte[100];
                     await stream.ReadAsync(buffer, 0, buffer.Length);
@@ -172,12 +167,12 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            var videoInfo = await client.GetVideoInfoAsync(id);
+            var videoInfo = await client.GetVideoAsync(id);
 
             var trackInfo = videoInfo.ClosedCaptionTracks.First();
             var track = await client.GetClosedCaptionTrackAsync(trackInfo);
 
-            Assert.That.IsSet(track);
+            Assert.IsNotNull(track);
         }
 
         [TestMethod]
@@ -188,7 +183,7 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            var videoInfo = await client.GetVideoInfoAsync(id);
+            var videoInfo = await client.GetVideoAsync(id);
 
             var streamInfo = videoInfo.AudioStreams.OrderBy(s => s.ContentLength).First();
             var outputFilePath = Path.Combine(Shared.TempDirectoryPath, Guid.NewGuid().ToString());
@@ -208,7 +203,7 @@ namespace Tests
             var id = (string) TestContext.DataRow["Id"];
 
             var client = new YoutubeClient();
-            var videoInfo = await client.GetVideoInfoAsync(id);
+            var videoInfo = await client.GetVideoAsync(id);
 
             var streamInfo = videoInfo.ClosedCaptionTracks.First();
             var outputFilePath = Path.Combine(Shared.TempDirectoryPath, Guid.NewGuid().ToString());
