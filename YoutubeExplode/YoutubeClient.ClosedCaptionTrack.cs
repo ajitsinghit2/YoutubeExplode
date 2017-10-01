@@ -24,17 +24,17 @@ namespace YoutubeExplode
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
-            // Get
+            // Get manifest
             var response = await _httpService.GetStringAsync(info.Url).ConfigureAwait(false);
             var captionTrackXml = XElement.Parse(response).StripNamespaces();
 
-            // Parse
+            // Parse captions
             var captions = new List<ClosedCaption>();
             foreach (var captionXml in captionTrackXml.Descendants("text"))
             {
                 var text = captionXml.Value;
-                var offset = TimeSpan.FromSeconds((double)captionXml.AttributeStrict("start"));
-                var duration = TimeSpan.FromSeconds((double)captionXml.AttributeStrict("dur"));
+                var offset = TimeSpan.FromSeconds((double) captionXml.AttributeStrict("start"));
+                var duration = TimeSpan.FromSeconds((double) captionXml.AttributeStrict("dur"));
 
                 var caption = new ClosedCaption(text, offset, duration);
                 captions.Add(caption);
@@ -48,24 +48,21 @@ namespace YoutubeExplode
         /// <summary>
         /// Downloads a closed caption track to file
         /// </summary>
-        public async Task DownloadClosedCaptionTrackAsync(ClosedCaptionTrackInfo info,
-            string filePath, IProgress<double> progress, CancellationToken cancellationToken, int bufferSize)
+        public async Task DownloadClosedCaptionTrackAsync(ClosedCaptionTrackInfo info, string filePath,
+            IProgress<double> progress, CancellationToken cancellationToken)
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
             if (filePath == null)
                 throw new ArgumentNullException(nameof(filePath));
-            if (bufferSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(bufferSize));
 
             // Get the track
             var track = await GetClosedCaptionTrackAsync(info).ConfigureAwait(false);
 
             // Save to file as SRT
-            using (var output = File.Create(filePath, bufferSize))
-            using (var sw = new StreamWriter(output, Encoding.Unicode, bufferSize))
+            using (var writer = File.CreateText(filePath))
             {
-                for (int i = 0; i < track.Captions.Count; i++)
+                for (var i = 0; i < track.Captions.Count; i++)
                 {
                     // Make sure cancellation was not requested
                     cancellationToken.ThrowIfCancellationRequested();
@@ -86,20 +83,13 @@ namespace YoutubeExplode
                     buffer.AppendLine(caption.Text);
 
                     // Write to stream
-                    await sw.WriteLineAsync(buffer.ToString()).ConfigureAwait(false);
+                    await writer.WriteLineAsync(buffer.ToString()).ConfigureAwait(false);
 
                     // Report progress
                     progress?.Report((i + 1.0) / track.Captions.Count);
                 }
             }
         }
-
-        /// <summary>
-        /// Downloads a closed caption track to file
-        /// </summary>
-        public Task DownloadClosedCaptionTrackAsync(ClosedCaptionTrackInfo info, string filePath,
-            IProgress<double> progress, CancellationToken cancellationToken)
-            => DownloadClosedCaptionTrackAsync(info, filePath, progress, cancellationToken, 4096);
 
         /// <summary>
         /// Downloads a closed caption track to file

@@ -20,7 +20,7 @@ namespace YoutubeExplode
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
-            // Get
+            // Get stream
             var stream = await _httpService.GetStreamAsync(info.Url).ConfigureAwait(false);
 
             return new MediaStream(info, stream);
@@ -31,21 +31,19 @@ namespace YoutubeExplode
         /// <summary>
         /// Downloads a media stream to file
         /// </summary>
-        public async Task DownloadMediaStreamAsync(MediaStreamInfo info, string filePath,
-            IProgress<double> progress, CancellationToken cancellationToken, int bufferSize)
+        public async Task DownloadMediaStreamAsync(MediaStreamInfo info, string filePath, IProgress<double> progress,
+            CancellationToken cancellationToken)
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
             if (filePath == null)
                 throw new ArgumentNullException(nameof(filePath));
-            if (bufferSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(bufferSize));
 
             // Save to file
             using (var input = await GetMediaStreamAsync(info).ConfigureAwait(false))
-            using (var output = File.Create(filePath, bufferSize))
+            using (var output = File.Create(filePath))
             {
-                var buffer = new byte[bufferSize];
+                var buffer = new byte[4 * 1024];
                 int bytesRead;
                 long totalBytesRead = 0;
                 do
@@ -62,13 +60,6 @@ namespace YoutubeExplode
                 } while (bytesRead > 0);
             }
         }
-
-        /// <summary>
-        /// Downloads a media stream to file
-        /// </summary>
-        public Task DownloadMediaStreamAsync(MediaStreamInfo info, string filePath, IProgress<double> progress,
-            CancellationToken cancellationToken)
-            => DownloadMediaStreamAsync(info, filePath, progress, cancellationToken, 4096);
 
         /// <summary>
         /// Downloads a media stream to file

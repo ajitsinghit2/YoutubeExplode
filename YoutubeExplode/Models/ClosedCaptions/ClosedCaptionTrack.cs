@@ -20,10 +20,10 @@ namespace YoutubeExplode.Models.ClosedCaptions
         public IReadOnlyList<ClosedCaption> Captions { get; }
 
         /// <inheritdoc />
-        public ClosedCaptionTrack(ClosedCaptionTrackInfo info, IEnumerable<ClosedCaption> captions)
+        public ClosedCaptionTrack(ClosedCaptionTrackInfo info, IReadOnlyList<ClosedCaption> captions)
         {
             Info = info ?? throw new ArgumentNullException(nameof(info));
-            Captions = captions?.ToArray() ?? throw new ArgumentNullException(nameof(captions));
+            Captions = captions ?? throw new ArgumentNullException(nameof(captions));
         }
 
         /// <summary>

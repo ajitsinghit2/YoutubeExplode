@@ -8,6 +8,11 @@ namespace YoutubeExplode.Exceptions
     public class VideoNotAvailableException : Exception
     {
         /// <summary>
+        /// ID of the video
+        /// </summary>
+        public string VideoId { get; }
+
+        /// <summary>
         /// Error code
         /// </summary>
         public int Code { get; }
@@ -18,9 +23,10 @@ namespace YoutubeExplode.Exceptions
         public string Reason { get; }
 
         /// <inheritdoc />
-        public VideoNotAvailableException(int code, string reason)
+        public VideoNotAvailableException(string videoId, int code, string reason)
             : base("The video is not available")
         {
+            VideoId = videoId;
             Code = code;
             Reason = reason;
         }

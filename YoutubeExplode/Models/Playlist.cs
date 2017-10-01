@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace YoutubeExplode.Models
 {
@@ -46,7 +45,7 @@ namespace YoutubeExplode.Models
 
         /// <inheritdoc />
         public Playlist(string id, string title, string author, string description, Statistics statistics,
-            IEnumerable<PlaylistVideo> videos)
+            IReadOnlyList<PlaylistVideo> videos)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Type = GetPlaylistType(id);
@@ -54,7 +53,7 @@ namespace YoutubeExplode.Models
             Author = author ?? throw new ArgumentNullException(nameof(author));
             Description = description ?? throw new ArgumentNullException(nameof(description));
             Statistics = statistics ?? throw new ArgumentNullException(nameof(statistics));
-            Videos = videos?.ToArray() ?? throw new ArgumentNullException(nameof(videos));
+            Videos = videos ?? throw new ArgumentNullException(nameof(videos));
         }
     }
 

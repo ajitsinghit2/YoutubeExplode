@@ -32,8 +32,12 @@ namespace YoutubeExplode
             var videos = new List<PlaylistVideo>();
             do
             {
-                // Get
-                var request = YoutubeHost + $"/list_ajax?style=xml&action_get_list=1&list={playlistId}&index={offset}";
+                // Get manifest
+                var request = $"{YoutubeHost}/list_ajax" +
+                              $"?list={playlistId}" +
+                              $"&index={offset}" +
+                              "&style=xml" +
+                              "&action_get_list=1";
                 var response = await _httpService.GetStringAsync(request).ConfigureAwait(false);
                 playlistInfoXml = XElement.Parse(response).StripNamespaces();
 
@@ -53,7 +57,7 @@ namespace YoutubeExplode
                     // Keywords
                     var videoKeywordsJoined = videoInfoXml.ElementStrict("keywords").Value;
                     var videoKeywords = Regex
-                        .Matches(videoKeywordsJoined, @"(?<=(^|\s)(?<quote>""?))([^""]|(""""))*?(?=\<quote>(?=\s|$))")
+                        .Matches(videoKeywordsJoined, @"(?<=(^|\s)(?<q>""?))([^""]|(""""))*?(?=\<q>(?=\s|$))")
                         .Cast<Match>()
                         .Select(m => m.Value)
                         .Where(s => s.IsNotBlank())
@@ -82,7 +86,8 @@ namespace YoutubeExplode
                 }
 
                 // Break if the videos started repeating
-                if (delta <= 0) break;
+                if (delta <= 0)
+                    break;
 
                 // Prepare for next page
                 pagesDone++;
